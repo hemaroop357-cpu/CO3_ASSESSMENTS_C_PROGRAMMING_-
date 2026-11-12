@@ -1,0 +1,143 @@
+#include <stdio.h>
+
+void print_array(int a[], int n)
+{
+    for (int i = 0; i < n; i++)
+        printf("%d ", a[i]);
+
+    printf("\n");
+}
+
+void bubble_sort(int a[], int n,
+                 long *comparisons, long *swaps)
+{
+    *comparisons = 0;
+    *swaps = 0;
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        int swapped = 0;
+
+        for (int j = 0; j < n - 1 - i; j++)
+        {
+            (*comparisons)++;
+
+            if (a[j] > a[j + 1])
+            {
+                int temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+
+                (*swaps)++;
+                swapped = 1;
+            }
+        }
+
+        if (!swapped)
+            break;
+    }
+}
+
+void selection_sort(int a[], int n,
+                    long *comparisons, long *swaps)
+{
+    *comparisons = 0;
+    *swaps = 0;
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        int min_index = i;
+
+        for (int j = i + 1; j < n; j++)
+        {
+            (*comparisons)++;
+
+            if (a[j] < a[min_index])
+                min_index = j;
+        }
+
+        if (min_index != i)
+        {
+            int temp = a[i];
+            a[i] = a[min_index];
+            a[min_index] = temp;
+            (*swaps)++;
+        }
+    }
+}
+
+void insertion_sort(int a[], int n,
+                    long *comparisons, long *shifts)
+{
+    *comparisons = 0;
+    *shifts = 0;
+
+    for (int i = 1; i < n; i++)
+    {
+        int key = a[i];
+        int j = i - 1;
+
+        while (j >= 0)
+        {
+            (*comparisons)++;
+
+            if (a[j] > key)
+            {
+                a[j + 1] = a[j];
+                (*shifts)++;
+                j--;
+            }
+            else
+                break;
+        }
+
+        a[j + 1] = key;
+    }
+}
+
+int main()
+{
+    int original[4][6] = {
+        {10, 20, 30, 40, 50, 60},
+        {10, 20, 35, 30, 40, 50},
+        {60, 50, 40, 30, 20, 10},
+        {30, 10, 60, 20, 50, 40}
+    };
+
+    char *orders[] = {
+        "Sorted", "Nearly Sorted",
+        "Reverse Sorted", "Random"
+    };
+
+    for (int t = 0; t < 4; t++)
+    {
+        int a[6], b[6], c[6];
+        long comp, moves;
+
+        for (int i = 0; i < 6; i++)
+            a[i] = b[i] = c[i] = original[t][i];
+
+        printf("\n%s Input: ", orders[t]);
+        print_array(original[t], 6);
+
+        bubble_sort(a, 6, &comp, &moves);
+        printf("Bubble Sort: ");
+        print_array(a, 6);
+        printf("Comparisons = %ld, Swaps = %ld\n",
+               comp, moves);
+
+        selection_sort(b, 6, &comp, &moves);
+        printf("Selection Sort: ");
+        print_array(b, 6);
+        printf("Comparisons = %ld, Swaps = %ld\n",
+               comp, moves);
+
+        insertion_sort(c, 6, &comp, &moves);
+        printf("Insertion Sort: ");
+        print_array(c, 6);
+        printf("Comparisons = %ld, Shifts = %ld\n",
+               comp, moves);
+    }
+
+    return 0;
+}
